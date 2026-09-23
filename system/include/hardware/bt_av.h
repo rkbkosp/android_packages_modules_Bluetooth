@@ -62,6 +62,8 @@ typedef enum {
   BTAV_A2DP_CODEC_INDEX_SOURCE_LDAC,
   BTAV_A2DP_CODEC_INDEX_SOURCE_LC3,
   BTAV_A2DP_CODEC_INDEX_SOURCE_OPUS,
+  BTAV_A2DP_CODEC_INDEX_SOURCE_LHDCV3,
+  BTAV_A2DP_CODEC_INDEX_SOURCE_LHDCV5,
 
   BTAV_A2DP_CODEC_INDEX_SOURCE_MAX,
 
@@ -195,6 +197,12 @@ struct btav_a2dp_codec_config_t {
         return "Opus (Sink)";
       case BTAV_A2DP_CODEC_INDEX_SOURCE_OPUS:
         return "Opus";
+      // Savitech Patch - START
+      case BTAV_A2DP_CODEC_INDEX_SOURCE_LHDCV3:
+        return "LHDC V3";
+      case BTAV_A2DP_CODEC_INDEX_SOURCE_LHDCV5:
+        return "LHDC V5";
+      // Savitech Patch - END
       case BTAV_A2DP_CODEC_INDEX_MAX:
         return "Unknown(CODEC_INDEX_MAX)";
       case BTAV_A2DP_CODEC_INDEX_SOURCE_EXT_MIN:

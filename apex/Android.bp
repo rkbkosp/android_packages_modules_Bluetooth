@@ -31,6 +31,13 @@ apex {
     ],
     apps: ["Bluetooth"],
 
+    // Savitech LHDC - START
+    native_shared_libs: [
+        "//device/oneplus/astonc:liblhdcBT_enc",
+        "//device/oneplus/astonc:liblhdcv5BT_enc",
+    ],
+    // Savitech LHDC - END
+
     multilib: {
         first: {
             // Extractor process runs only with the primary ABI.

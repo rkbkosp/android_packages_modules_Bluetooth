@@ -86,6 +86,10 @@ enum class CodecId : uint64_t {
   APTX_HD = VendorCodecId(kAptxHdCompanyId, kAptxHdCodecId),
   LDAC = VendorCodecId(kLdacCompanyId, kLdacCodecId),
   OPUS = VendorCodecId(kOpusCompanyId, kOpusCodecId),
+  //Savitech LHDC - START
+  LHDCV3 = 0x4c33053aff,
+  LHDCV5 = 0x4c35053aff,
+  //Savitech LHDC - END
 };
 
 /// Parse the standardized codec identifier from the Media Codec Capabilities.

@@ -522,7 +522,7 @@
 
 /* Number of simultaneous stream endpoints. */
 #ifndef AVDT_NUM_SEPS
-#define AVDT_NUM_SEPS 12
+#define AVDT_NUM_SEPS 16    //Savitech LHDC - BTAV_A2DP_CODEC_INDEX_SOURCE_EXT_MAX
 #endif
 
 /* Number of transport channels setup by AVDT for all media streams */

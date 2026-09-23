@@ -114,6 +114,8 @@
     <integer name="a2dp_source_codec_priority_aptx_hd">4001</integer>
     <integer name="a2dp_source_codec_priority_ldac">5001</integer>
     <integer name="a2dp_source_codec_priority_lc3">6001</integer>
+    <integer name="a2dp_source_codec_priority_lhdcv3">8001</integer>
+    <integer name="a2dp_source_codec_priority_lhdcv5">8002</integer>
 
     <!-- Package that is responsible for user interaction on pairing request,
          success or cancel.

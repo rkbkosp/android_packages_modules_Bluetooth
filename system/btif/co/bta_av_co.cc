@@ -273,7 +273,11 @@ tA2DP_STATUS BtaAvCo::ProcessSourceGetConfig(tBTA_AV_HNDL bta_av_handle,
   // Select the Source codec
   const BtaAvCoSep* p_sink = nullptr;
   if (p_peer->acceptor) {
-    UpdateAllSelectableSourceCodecs(p_peer);
+    // Savitech Patch - START
+    //UpdateAllSelectableSourceCodecs(p_peer);
+    size_t updated_codecs = UpdateAllSelectableSourceCodecs(p_peer);
+    // Savitech Patch - END
+
     if (p_peer->p_sink == nullptr) {
       // Update the selected codec
       p_peer->p_sink = peer_cache_->FindPeerSink(
@@ -284,6 +288,14 @@ tA2DP_STATUS BtaAvCo::ProcessSourceGetConfig(tBTA_AV_HNDL bta_av_handle,
       log::error("cannot find the selected codec for peer {}", p_peer->addr);
       return A2DP_FAIL;
     }
+    // Savitech Patch - START
+    //    NOTE: Dispatch the event to make sure a callback with the most recent UPDATED
+    //    codec info is generated.
+    if (updated_codecs > 0) {
+      log::info(": onCodecConfigChanged(updated_codecs:{})",  updated_codecs);
+      ReportSourceCodecState(p_peer);
+    }
+    // Savitech Patch - END
   } else {
     if (btif_av_peer_prefers_mandatory_codec(p_peer->addr, A2dpType::kSource)) {
       // Apply user preferred codec directly before first codec selected.
