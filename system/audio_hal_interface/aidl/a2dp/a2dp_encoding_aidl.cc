@@ -62,18 +62,13 @@ namespace {
 using ::bluetooth::audio::a2dp::Status;
 using ::bluetooth::audio::aidl::a2dp::LatencyMode;
 
-/**
- * LHDC is encoded by the Bluetooth stack's own liblhdc (lhdcBT_enc / lhdcv5BT_enc)
- * over the software datapath; this device's offload datapath has no LHDC encoder.
- * The vendor HAL nevertheless advertises LHDC in its offload ProviderInfo (AIDL v4),
- * while AudioManager::getHwOffloadFormatsSupportedForA2dp() -- the set the Java side
- * calls codecConfigOffloading -- does not list it. Trusting the provider routed LHDC
- * to A2DP_HARDWARE_OFFLOAD_ENCODING_DATAPATH (session_type=2) and
- * open_a2dp_source() then failed with status -1 on every retry, so all playback died.
- * Keep LHDC on the software datapath and let every other codec keep its own path.
+/* These codecs use the bluetooth policy module and the stack's host encoders.
+ * The QTI hardware A2DP path reported no provider session on this build.
  */
-static bool is_lhdc_source_codec(btav_a2dp_codec_index_t codec_type) {
-  return codec_type == BTAV_A2DP_CODEC_INDEX_SOURCE_LHDCV3 ||
+static bool uses_host_encoding(btav_a2dp_codec_index_t codec_type) {
+  return codec_type == BTAV_A2DP_CODEC_INDEX_SOURCE_SBC ||
+         codec_type == BTAV_A2DP_CODEC_INDEX_SOURCE_AAC ||
+         codec_type == BTAV_A2DP_CODEC_INDEX_SOURCE_LHDCV3 ||
          codec_type == BTAV_A2DP_CODEC_INDEX_SOURCE_LHDCV5;
 }
 
@@ -381,7 +376,7 @@ bool setup_codec(const ahal_codec_configuration& config) {
     return false;
   }
 
-  if (!is_lhdc_source_codec(config.codec_config.codec_type) &&
+  if (!uses_host_encoding(config.codec_config.codec_type) &&
       provider::supports_codec(config.codec_config.codec_type)) {
     // The codec is supported in the provider info (AIDL v4).
     // In this case, the codec is offloaded, and the configuration passed
@@ -428,9 +423,9 @@ bool setup_codec(const ahal_codec_configuration& config) {
   PcmConfiguration pcm_config{};
 
   // Compute the codec configuration for the hardware encoding session and
-  // check if the parameters are supported. LHDC skips this too, so that it
-  // reaches the PCM (software) branch below and the stack encodes it.
-  if (!is_lhdc_source_codec(config.codec_config.codec_type) &&
+  // check if the parameters are supported. Host-encoded codecs skip this so
+  // they reach the PCM branch below.
+  if (!uses_host_encoding(config.codec_config.codec_type) &&
       getHalCodecConfiguration(config, &codec_config)) {
     if (!is_hal_offloading()) {
       log::info("Switching BluetoothAudio HAL to Hardware");
